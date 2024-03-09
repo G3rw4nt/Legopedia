@@ -3,11 +3,11 @@ import psycopg2
 import os
 
 app = Flask(__name__)
-print(os.getenv('DATABASE'))
 conn = psycopg2.connect(
+    database=os.getenv('DATABASE'),
     host=os.getenv('HOST'),
-    user=os.getenv('USER'),
-    password=os.getenv('PASSWORD'),
+    user=os.getenv('DB_USER'),
+    password=os.getenv('DB_PASSWORD'),
     port=os.getenv('PORT')
 )
 
