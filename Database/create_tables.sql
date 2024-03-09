@@ -30,3 +30,7 @@ COPY PART_CATEGORIES(id, name) FROM '/data/part_categories.csv' WITH (FORMAT csv
 COPY PARTS(part_num, name, part_cat_id) FROM '/data/parts.csv' WITH (FORMAT csv, HEADER true);
 
 COPY SETS(set_num, name, year, theme_id, num_parts) FROM '/data/sets.csv' WITH (FORMAT csv, HEADER true);
+
+ALTER SEQUENCE part_categories_id_seq START WITH 58;
+
+ALTER SEQUENCE themes_id_seq START WITH 615;
