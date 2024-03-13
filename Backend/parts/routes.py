@@ -1,7 +1,6 @@
 from app import app
 from parts.models import Parts
 
-
 @app.route('/parts', methods=['GET'])
 def read_all_parts():
     return Parts().read_all()
