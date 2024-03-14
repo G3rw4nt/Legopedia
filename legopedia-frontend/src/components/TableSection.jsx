@@ -52,7 +52,6 @@ const TableSection = () => {
     }, []);
 
     const columnsParts = [
-        { field: "id", headerName: "ID", width: 90 },
         {
             field: "part_num",
             headerName: "Part Number",
@@ -75,7 +74,6 @@ const TableSection = () => {
     ];
 
     const columnsSets = [
-        { field: "id", headerName: "ID", width: 90 },
         {
             field: "set_num",
             headerName: "Set Number",
@@ -119,6 +117,9 @@ const TableSection = () => {
             </div>
             <Box sx={{ height: 400, width: "100%" }}>
                 <DataGrid
+                    getRowId={(row) =>
+                        option === "parts" ? row.part_num : row.set_num
+                    }
                     style={{ color: "#fff" }}
                     rows={option === "parts" ? parts : sets}
                     columns={option === "parts" ? columnsParts : columnsSets}
