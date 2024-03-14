@@ -33,17 +33,17 @@ const TableSection = () => {
                 setParts(partsWithCategories);
             });
         });
-        getSets().then((data) => {
-            console.log(data);
+        getSets().then((sets) => {
+            console.log(sets);
             getThemes().then((themes) => {
                 console.log(themes);
-                const setsWithThemes = data.map((set) => {
+                const setsWithThemes = sets.map((set) => {
                     const theme = themes.find(
                         (theme) => theme.id === set.theme_id
                     );
                     return {
                         ...set,
-                        theme_id: theme.name,
+                        theme_id: theme?.name,
                     };
                 });
                 setSets(setsWithThemes);
