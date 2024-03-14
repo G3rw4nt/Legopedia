@@ -9,12 +9,13 @@ cors = CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 app.secret_key = b'\xcc^\x91\xea\x17-\xd0W\x03\xa7\xf8J0\xac8\xc5'
 
 conn = psycopg2.connect(
-    database=os.getenv('DATABASE'),
-    host=os.getenv('HOST'),
-    user=os.getenv('DB_USER'),
-    password=os.getenv('DB_PASSWORD'),
-    port=os.getenv('PORT')
+    database="db",
+    host="localhost",
+    user="postgre",
+    password="postgre",
+    port="5432"
 )
+
 cursor = conn.cursor()
 
 import part_categories.routes

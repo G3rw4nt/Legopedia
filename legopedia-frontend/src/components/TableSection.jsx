@@ -1,39 +1,46 @@
 import "./TableSection.css";
+import { getCategories, getParts, getSets, getThemes } from "../api/getData";
 
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 
 import { useEffect, useState } from "react";
 
-import { api } from "../api";
-
 const TableSection = () => {
-  const [option, setOption] = useState("parts");
+  const [option, setOption] = useState("sets");
   const [parts, setParts] = useState([]);
   const [sets, setSets] = useState([]);
 
-  async function fetchParts() {
-    try {
-      const fetched = await api.get("/parts");
-      setParts(fetched.data);
-    } catch (err) {
-      console.error("fetchParts error: ", err);
-    }
-  }
-
-  async function fetchSets() {
-    try {
-      const fetched = await api.get("/sets");
-      setSets(fetched.data);
-    } catch (err) {
-      console.error("fetchParts error: ", err);
-    }
-  }
-
   useEffect(() => {
-    console.log("==== RELOAD ====");
-    fetchParts();
-    fetchSets();
+    getParts().then(data => {
+      getCategories().then(categories => {
+        console.log(categories);
+        const partsWithCategories = data.map(part => {
+          const category = categories.find(
+            category => category.id === part.part_cat_id
+          );
+          return {
+            ...part,
+            part_cat_id: category.name
+          };
+        });
+        setParts(partsWithCategories);
+      });
+    });
+    getSets().then(data => {
+      console.log(data);
+      getThemes().then(themes => {
+        console.log(themes);
+        const setsWithThemes = data.map(set => {
+          const theme = themes.find(theme => theme.id === set.theme_id);
+          return {
+            ...set,
+            theme_id: theme.name
+          };
+        });
+        setSets(setsWithThemes);
+      });
+    }, []);
   }, []);
 
   const columnsParts = [
