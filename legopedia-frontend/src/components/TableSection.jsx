@@ -27,7 +27,7 @@ const TableSection = () => {
                     );
                     return {
                         ...part,
-                        part_cat_id: category.name,
+                        part_cat_id: category?.name,
                     };
                 });
                 setParts(partsWithCategories);
