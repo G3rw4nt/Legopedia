@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import "./TableSection.css";
 import {
     getCategories,
@@ -7,6 +6,10 @@ import {
     getSets,
     getThemes,
 } from "../api/getData";
+
+import { useEffect, useState } from "react";
+
+import {api} from '../api';
 
 const TableSection = () => {
     const [option, setOption] = useState("sets");
@@ -46,7 +49,7 @@ const TableSection = () => {
             });
         }, []);
     }, []);
-
+    
     return (
         <div className="table-container">
             <div className="table-buttons">
