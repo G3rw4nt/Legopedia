@@ -23,6 +23,8 @@ export const getThemes = async () => {
 }
 
 export const getFilteredParts = async (column, value) => {
-    const response = await axios.get(`${link}/parts/${column}/${value}`);
+    const response = await axios.get(`${link}/part`, {
+        column: value,
+    });
     return response.data;
 }

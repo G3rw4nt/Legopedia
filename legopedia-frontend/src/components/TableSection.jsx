@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import "./TableSection.css";
-import { getCategories, getParts, getSets, getThemes } from "../api/getData";
+import {
+    getCategories,
+    getFilteredParts,
+    getParts,
+    getSets,
+    getThemes,
+} from "../api/getData";
 
 const TableSection = () => {
     const [option, setOption] = useState("sets");
@@ -8,21 +14,21 @@ const TableSection = () => {
     const [sets, setSets] = useState([]);
 
     useEffect(() => {
-        getParts().then((data) => {
-            getCategories().then((categories) => {
-                console.log(categories);
-                const partsWithCategories = data.map((part) => {
-                    const category = categories.find(
-                        (category) => category.id === part.part_cat_id
-                    );
-                    return {
-                        ...part,
-                        part_cat_id: category.name,
-                    };
-                });
-                setParts(partsWithCategories);
-            });
-        });
+        // getParts().then((data) => {
+        //     getCategories().then((categories) => {
+        //         console.log(categories);
+        //         const partsWithCategories = data.map((part) => {
+        //             const category = categories.find(
+        //                 (category) => category.id === part.part_cat_id
+        //             );
+        //             return {
+        //                 ...part,
+        //                 part_cat_id: category.name,
+        //             };
+        //         });
+        //         setParts(partsWithCategories);
+        //     });
+        // });
         getSets().then((data) => {
             console.log(data);
             getThemes().then((themes) => {
@@ -44,6 +50,7 @@ const TableSection = () => {
     return (
         <div className="table-container">
             <div className="table-buttons">
+                <button onClick={() => getFilteredParts("parts")}>PARTS</button>
                 {/* <button onClick={setOption("parts")}>PARTS</button>
                 <button onClick={setOption("sets")}>SETS</button> */}
             </div>
