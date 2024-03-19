@@ -1,4 +1,5 @@
 import "./TableSection.css";
+
 import {
     getCategories,
     getFilteredParts,
@@ -6,11 +7,10 @@ import {
     getSets,
     getThemes,
 } from "../api/getData";
+import { useEffect, useState } from "react";
 
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
-
-import { useEffect, useState } from "react";
 
 const TableSection = () => {
     const [option, setOption] = useState("sets");
@@ -55,14 +55,14 @@ const TableSection = () => {
         {
             field: "part_num",
             headerName: "Part Number",
-            type: "number",
-            width: 150,
+            // type: "number",
+            width: 170,
             editable: true,
         },
         {
             field: "name",
             headerName: "Part Name",
-            width: 150,
+            width: 350,
             editable: true,
         },
         {
@@ -83,21 +83,21 @@ const TableSection = () => {
         {
             field: "name",
             headerName: "Set Name",
-            width: 150,
+            width: 260,
             editable: true,
         },
         {
             field: "year",
             headerName: "Year",
-            type: "number",
-            width: 110,
+            // type: "number",
+            width: 100,
             editable: true,
         },
         {
             field: "num_parts",
             headerName: "Number of parts",
             type: "number",
-            width: 110,
+            width: 150,
             editable: true,
         },
         {
@@ -108,7 +108,7 @@ const TableSection = () => {
             editable: true,
         },
     ];
-
+    
     return (
         <div className="table-container">
             <div className="table-buttons">
@@ -121,7 +121,7 @@ const TableSection = () => {
                         option === "parts" ? row.part_num : row.set_num
                     }
                     style={{ color: "#fff" }}
-                    rows={option === "parts" ? parts : sets}
+                    rows={option === "parts" ? parts.filter(part => !!part?.part_num) : sets.filter(set => !!set?.set_num)}
                     columns={option === "parts" ? columnsParts : columnsSets}
                     initialState={{
                         pagination: {
@@ -135,45 +135,6 @@ const TableSection = () => {
                     disableRowSelectionOnClick
                 />
             </Box>
-            {/* <table className="table">
-                <thead>
-                    {option === "parts" ? (
-                        <tr>
-                            <th>Part Number</th>
-                            <th>Part Name</th>
-                            <th>Category</th>
-                        </tr>
-                    ) : (
-                        <tr>
-                            <th>Set Number</th>
-                            <th>Set Name</th>
-                            <th>Year</th>
-                            <th>Number of parts</th>
-                            <th>Theme</th>
-                        </tr>
-                    )}
-                </thead>
-                <tbody>
-                    {option === "parts"
-                        ? parts.map((part) => (
-                            <tr key={part.part_num}>
-                                <td>{part.part_num}</td>
-                                <td>{part.name}</td>
-                                <td>{part.part_cat_id}</td>
-                                
-                            </tr>
-                        ))
-                        : sets.map((set) => (
-                            <tr key={set.set_num}>
-                                <td>{set.set_num}</td>
-                                <td>{set.name}</td>
-                                <td>{set.year}</td>
-                                <td>{set.num_parts}</td>
-                                <td>{set.theme_id}</td>
-                            </tr>
-                    ))}
-                </tbody>
-            </table> */}
         </div>
     );
 };
