@@ -28,3 +28,8 @@ export const getFilteredParts = async (column, value) => {
     });
     return response.data;
 }
+
+export const getHistogram = async () => {
+    // const response = await axios.get(`${link}/histogram`);
+    // return response.data;
+}
