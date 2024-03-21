@@ -20,3 +20,9 @@ def write_set():
 @app.route('/sets', methods=['PUT'])
 def update_sets():
     return Sets().update()
+
+
+@app.route('/sets/histogram', methods=['GET'])
+def read_sets_histogram():
+    return Sets().read_histogram_data()
+    

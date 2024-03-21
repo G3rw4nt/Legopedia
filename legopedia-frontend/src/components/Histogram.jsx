@@ -1,34 +1,31 @@
 import "./TableSection.css";
 
-import * as d3 from "d3";
+// import * as d3 from "d3";
 
 import { useEffect, useState } from "react";
 
-import {
-    getHistogram,
-} from "../api/getData";
+import { getHistogram } from "../api/getData";
 
 const Histogram = () => {
-    const [data, setData] = useState([]);
+  const [data, setData] = useState([]);
 
-    useEffect(() => {
-      getHistogram().then((result) => {
-        setData(result);
-      });
-    }, [])
+  useEffect(() => {
+    getHistogram().then(result => {
+      setData(result);
+    });
+  }, []);
 
-    return (
-        <div className="histogram-container">
-
-          {/* 
+  return (
+    <div className="histogram-container">
+      tu będzie histogram na podstawie danych, które już się pobierają-- TODO
+      {/* 
           
           ZROBIĆ HISTOGRAM WG: 
           https://www.react-graph-gallery.com/histogram
           
           */}
-           
-        </div>
-    );
+    </div>
+  );
 };
 
 export default Histogram;
