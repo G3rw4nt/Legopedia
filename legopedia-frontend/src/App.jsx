@@ -1,15 +1,22 @@
-// import { useState } from "react";
+import { useState } from "react";
+
 import "./App.css";
+
+import Histogram from "./components/Histogram";
+import OptionToggle from "./components/OptionToggle";
 import TableSection from "./components/TableSection";
 import Title from "./components/Title";
 
 function App() {
-    return (
-        <>
-            <Title />
-            <TableSection />
-        </>
-    );
+  const [option, setOption] = useState("sets");
+  return (
+    <>
+      <Title />
+      <OptionToggle setOption={setOption} />
+      {option === "sets" && <Histogram />}
+      <TableSection option={option} />
+    </>
+  );
 }
 
 export default App;

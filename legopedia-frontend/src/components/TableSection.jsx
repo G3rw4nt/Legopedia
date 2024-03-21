@@ -1,4 +1,5 @@
 import "./TableSection.css";
+
 import {
     getCategories,
     getFilteredParts,
@@ -7,14 +8,13 @@ import {
     getSets,
     getThemes,
 } from "../api/getData";
+import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 
-import { useEffect, useState } from "react";
-
-const TableSection = () => {
-    const [option, setOption] = useState("sets");
+const TableSection = ({ option }) => {
     const [parts, setParts] = useState([]);
     const [sets, setSets] = useState([]);
     const [themes, setThemes] = useState([]);
@@ -65,14 +65,14 @@ const TableSection = () => {
         {
             field: "part_num",
             headerName: "Part Number",
-            type: "number",
-            width: 150,
+            // type: "number",
+            width: 170,
             editable: true,
         },
         {
             field: "name",
             headerName: "Part Name",
-            width: 150,
+            width: 350,
             editable: true,
         },
         {
@@ -93,21 +93,21 @@ const TableSection = () => {
         {
             field: "name",
             headerName: "Set Name",
-            width: 150,
+            width: 260,
             editable: true,
         },
         {
             field: "year",
             headerName: "Year",
-            type: "number",
-            width: 110,
+            // type: "number",
+            width: 100,
             editable: true,
         },
         {
             field: "num_parts",
             headerName: "Number of parts",
             type: "number",
-            width: 110,
+            width: 150,
             editable: true,
         },
         {
@@ -186,10 +186,10 @@ const TableSection = () => {
     return (
         <div className="table-container">
             <h2>{option}</h2>
-            <div className="table-buttons">
+            {/* <div className="table-buttons">
                 <button onClick={() => setOption("parts")}>PARTS</button>
                 <button onClick={() => setOption("sets")}>SETS</button>
-            </div>
+            </div> */}
             <div className="filtering">
                 <div className="filtering-label">Filter by: </div>
                 <select
@@ -246,6 +246,11 @@ const TableSection = () => {
             </Box>
         </div>
     );
+};
+// }
+
+TableSection.propTypes = {
+    option: PropTypes.string,
 };
 
 export default TableSection;

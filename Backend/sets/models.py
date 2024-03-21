@@ -32,6 +32,19 @@ class Sets:
             return jsonify(results), 200
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)}), 400
+        
+    @staticmethod
+    def read_histogram_data():
+        try:
+            query = "SELECT year, COUNT(*) FROM SETS GROUP BY year ORDER BY year ASC"
+            cursor.execute(query)
+            columns = [desc[0] for desc in cursor.description]
+            rows = cursor.fetchall()
+            results = [{columns[i]: value for i, value in enumerate(row)} for row in rows]
+            return jsonify(results), 200
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': str(e)}), 400
+
     @staticmethod
     def write():
         try:
