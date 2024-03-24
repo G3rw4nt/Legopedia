@@ -13,6 +13,7 @@ import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
+import { postParts, postSets } from "../api/postData";
 
 const TableSection = ({ option }) => {
     const [parts, setParts] = useState([]);
@@ -220,7 +221,14 @@ const TableSection = ({ option }) => {
                 name: partName,
                 part_cat_id: partCategory,
             };
-            console.log(newPart);
+            postParts(newPart).then((data) => {
+                if (data.code === "ERR_BAD_REQUEST")
+                    alert(data.response.data.message);
+                else {
+                    setData();
+                    hideAddingSection();
+                }
+            });
         } else {
             const newSet = {
                 set_num: setNum,
@@ -229,7 +237,14 @@ const TableSection = ({ option }) => {
                 num_parts: numParts,
                 theme_id: theme,
             };
-            console.log(newSet);
+            postSets(newSet).then((data) => {
+                if (data.code === "ERR_BAD_REQUEST")
+                    alert(data.response.data.message);
+                else {
+                    setData();
+                    hideAddingSection();
+                }
+            });
         }
     };
 
