@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* margin-top: 40px; */
 }
 
 .filtering {
@@ -48,9 +49,22 @@ body {
 }
 
 h2 {
-    margin: 5px;
+    margin: 20px;
 }
 
 h1 {
     margin: 5px;
+}
+
+.newRowForm {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.newRowForm button {
+    margin-top: 10px;
+    width: 100px;
+    align-self: center;
 }

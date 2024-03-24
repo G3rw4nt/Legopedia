@@ -10,7 +10,7 @@ start "db" /WAIT cmd /c "docker-compose up -d"
 cd ..
 
 rem Start frontend React app
-cd legopedia-frontend
+cd Frontend
 start "frontend" cmd /k "npm i && npm run dev"
 cd ..
 
