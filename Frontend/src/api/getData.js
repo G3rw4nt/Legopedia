@@ -22,13 +22,23 @@ export const getThemes = async () => {
   return response.data;
 };
 
-export const getFilteredParts = async (column, value) => {
-  const response = await axios.get(`${link}/parts`, {
-    column: value
+export const getFilteredSets = async (column, value) => {
+  const response = await axios.get(`${link}/set?`, {
+    params: {
+      [column]: value,
+    },
   });
   return response.data;
-};
+}
 
+export const getFilteredParts = async (column, value) => {
+  const response = await axios.get(`${link}/part?`, {
+    params: {
+      [column]: value,
+    },
+  });
+  return response.data;
+}
 export const getHistogram = async () => {
   const response = await axios.get(`${link}/sets/histogram`);
   return response.data;

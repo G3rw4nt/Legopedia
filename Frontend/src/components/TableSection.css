@@ -1,0 +1,70 @@
+.table-container {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* margin-top: 40px; */
+}
+
+.filtering {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+    align-items: center;
+    height: 20px;
+}
+
+.filtering-label {
+    width: 100px;
+}
+
+.filter-button {
+    margin-left: 15px;
+}
+
+.table-buttons {
+    display: flex;
+    width: 30%;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+tr,
+th,
+td {
+    border: 1px solid black;
+    padding: 10px;
+    min-width: 100px;
+}
+
+body {
+    color: #fff;
+}
+
+h2 {
+    margin: 20px;
+}
+
+h1 {
+    margin: 5px;
+}
+
+.newRowForm {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.newRowForm button {
+    margin-top: 10px;
+    width: 100px;
+    align-self: center;
+}

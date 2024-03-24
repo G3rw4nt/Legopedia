@@ -19,9 +19,10 @@ class Parts:
     @staticmethod
     def read():
         try:
-            data = request.get_json()
-            first_key = next(iter(data))
-            first_value = data[first_key]
+            data = request.args.to_dict()
+            print(data)
+            first_key = list(data.keys())[0]
+            first_value = list(data.values())[0]
             query = "SELECT * FROM PARTS WHERE {} = %s".format(first_key)
             cursor.execute(query, (first_value,))
             columns = [desc[0] for desc in cursor.description]
