@@ -5,6 +5,10 @@ from parts.models import Parts
 def read_all_parts():
     return Parts().read_all()
 
+@app.route('/parts_paginated', methods=['GET'])
+def read_all_parts_paginated():
+    return Parts().read_all_paginated()
+
 
 @app.route('/part', methods=['GET'])
 def read_part():

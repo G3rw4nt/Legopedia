@@ -11,11 +11,26 @@ import {
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-import Box from "@mui/material/Box";
-import { DataGrid } from "@mui/x-data-grid";
+// import Box from "@mui/material/Box";
+// import { DataGrid } from "@mui/x-data-grid";
+// import {
+//     randomCreatedDate,
+//     randomTraderName,
+//     randomUpdatedDate,
+// } from "@mui/x-data-grid-generator";
+// import { GridCellEditStopReasons } from "@mui/x-data-grid";
 import { postParts, postSets } from "../api/postData";
+import SelectEditInputCell from "./SelectEditInputCell";
+import EditButton from "./EditButton";
+import { putParts, putSets } from "../api/putData";
+// import { Select } from "@mui/material";
+
+const renderSelectEditInputCell = (params) => {
+    return <SelectEditInputCell {...params} />;
+};
 
 const TableSection = ({ option }) => {
+    const [page, setPage] = useState(1);
     const [parts, setParts] = useState([]);
     const [sets, setSets] = useState([]);
     const [themes, setThemes] = useState([]);
@@ -23,6 +38,7 @@ const TableSection = ({ option }) => {
     const [filterBy, setFilterBy] = useState("");
     const [filterValue, setFilterValue] = useState("");
     const [addForm, setAddForm] = useState(false);
+    const [editForm, setEditForm] = useState(false);
 
     //form for parts
     const [partNum, setPartNum] = useState("");
@@ -36,8 +52,20 @@ const TableSection = ({ option }) => {
     const [numParts, setNumParts] = useState("");
     const [theme, setTheme] = useState("");
 
+    //edit form for parts
+    const [editPartNum, setEditPartNum] = useState("");
+    const [editPartName, setEditPartName] = useState("");
+    const [editPartCategory, setEditPartCategory] = useState("");
+
+    //edit form for sets
+    const [editSetNum, setEditSetNum] = useState("");
+    const [editSetName, setEditSetName] = useState("");
+    const [editYear, setEditYear] = useState("");
+    const [editNumParts, setEditNumParts] = useState("");
+    const [editTheme, setEditTheme] = useState("");
+
     const setData = () => {
-        getParts().then((data) => {
+        getParts(page).then((data) => {
             console.log(data);
             getCategories().then((categories) => {
                 setCategories(categories);
@@ -47,13 +75,15 @@ const TableSection = ({ option }) => {
                     );
                     return {
                         ...part,
-                        part_cat_id: category?.name,
+                        part_cat_name: category?.name,
                     };
                 });
                 setParts(partsWithCategories);
+                console.log("parts with categowies");
+                console.log(partsWithCategories);
             });
         });
-        getSets().then((sets) => {
+        getSets(page).then((sets) => {
             console.log(sets);
             getThemes().then((themes) => {
                 setThemes(themes);
@@ -63,7 +93,7 @@ const TableSection = ({ option }) => {
                     );
                     return {
                         ...set,
-                        theme_id: theme?.name,
+                        theme_name: theme?.name,
                     };
                 });
                 setSets(setsWithThemes);
@@ -94,6 +124,7 @@ const TableSection = ({ option }) => {
             headerName: "Category",
             width: 110,
             editable: true,
+            renderEditCell: renderSelectEditInputCell,
         },
     ];
 
@@ -168,7 +199,7 @@ const TableSection = ({ option }) => {
                         );
                         return {
                             ...part,
-                            part_cat_id: category?.name,
+                            part_cat_name: category?.name,
                         };
                     });
                     setParts(partsWithCategories);
@@ -183,10 +214,11 @@ const TableSection = ({ option }) => {
                         );
                         return {
                             ...set,
-                            theme_id: theme?.name,
+                            theme_name: theme?.name,
                         };
                     });
                     setSets(setsWithThemes);
+                    console.log(setsWithThemes);
                 });
             });
     };
@@ -243,6 +275,76 @@ const TableSection = ({ option }) => {
                 else {
                     setData();
                     hideAddingSection();
+                }
+            });
+        }
+    };
+
+    const editRow = (id) => {
+        setEditForm(true);
+        if (option === "parts") {
+            const part = parts.find((part) => part.part_num === id);
+            console.log(part);
+            setEditPartNum(part.part_num);
+            setEditPartName(part.name);
+            setEditPartCategory(part.part_cat_id);
+        } else {
+            const set = sets.find((set) => set.set_num === id);
+            console.log(set);
+            setEditSetNum(set.set_num);
+            setEditSetName(set.name);
+            setEditYear(set.year);
+            setEditNumParts(set.num_parts);
+            setEditTheme(set.theme_id);
+        }
+    };
+
+    const hideEditForm = () => {
+        setEditForm(false);
+        setEditPartNum("");
+        setEditPartName("");
+        setEditPartCategory("");
+        setEditSetNum("");
+        setEditSetName("");
+        setEditYear("");
+        setEditNumParts("");
+        setEditTheme("");
+    };
+
+    const submitEditRow = (e) => {
+        e.preventDefault();
+        console.log(editPartNum, editPartName, editPartCategory);
+        console.log(editSetNum, editSetName, editYear, editNumParts, editTheme);
+        console.log(themes);
+        if (option === "parts") {
+            const editedPart = {
+                part_num: editPartNum,
+                name: editPartName,
+                part_cat_id: editPartCategory,
+            };
+            putParts(editedPart).then((data) => {
+                if (data.code === "ERR_BAD_REQUEST")
+                    // alert(data.response.data.message);
+                    console.log(data);
+                else {
+                    setData();
+                    hideEditForm();
+                }
+            });
+        } else {
+            const editedSet = {
+                set_num: editSetNum,
+                name: editSetName,
+                year: editYear,
+                num_parts: editNumParts,
+                theme_id: editTheme,
+            };
+            putSets(editedSet).then((data) => {
+                if (data.code === "ERR_BAD_REQUEST")
+                    alert(data.response.data.message);
+                else {
+                    setData();
+                    hideEditForm();
                 }
             });
         }
@@ -376,7 +478,95 @@ const TableSection = ({ option }) => {
                     )}
                 </form>
             )}
-            <Box sx={{ height: 400, width: "100%" }}>
+            {editForm && (
+                <form className="newRowForm">
+                    {option === "parts" ? (
+                        <>
+                            <h2>Edit part</h2>
+                            <label>Part Number</label>
+                            <input
+                                type="text"
+                                placeholder="Part Number"
+                                value={editPartNum}
+                                onChange={(e) => setEditPartNum(e.target.value)}
+                            />
+                            <label>Part Name</label>
+                            <input
+                                type="text"
+                                placeholder="Part Name"
+                                value={editPartName}
+                                onChange={(e) =>
+                                    setEditPartName(e.target.value)
+                                }
+                            />
+                            <label>Category</label>
+                            <select
+                                value={editPartCategory}
+                                onChange={(e) =>
+                                    setEditPartCategory(e.target.value)
+                                }
+                            >
+                                {categories.map((category) => (
+                                    <option
+                                        key={category.id}
+                                        value={category.id}
+                                    >
+                                        {category.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </>
+                    ) : (
+                        <>
+                            <h2>Edit set</h2>
+                            <label>Set Number</label>
+                            <input
+                                type="text"
+                                placeholder="Set Number"
+                                value={editSetNum}
+                                onChange={(e) => setEditSetNum(e.target.value)}
+                            />
+                            <label>Set Name</label>
+                            <input
+                                type="text"
+                                placeholder="Set Name"
+                                value={editSetName}
+                                onChange={(e) => setEditSetName(e.target.value)}
+                            />
+                            <label>Year</label>
+                            <input
+                                type="number"
+                                placeholder="Year"
+                                value={editYear}
+                                onChange={(e) => setEditYear(e.target.value)}
+                            />
+                            <label>Number of parts</label>
+                            <input
+                                type="text"
+                                placeholder="Number of parts"
+                                value={editNumParts}
+                                onChange={(e) =>
+                                    setEditNumParts(e.target.value)
+                                }
+                            />
+                            <label>Theme</label>
+                            <select
+                                value={editTheme}
+                                onChange={(e) => setEditTheme(e.target.value)}
+                            >
+                                {themes.map((theme) => (
+                                    <option key={theme.id} value={theme.id}>
+                                        {theme.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </>
+                    )}
+                    <button onClick={submitEditRow}>Zapisz</button>
+                    <button onClick={hideEditForm}>Anuluj</button>
+                </form>
+            )}
+            {/* <Box sx={{ height: 400, width: "100%" }}>
                 <DataGrid
                     getRowId={(row) =>
                         option === "parts"
@@ -396,8 +586,89 @@ const TableSection = ({ option }) => {
                     pageSizeOptions={[5]}
                     checkboxSelection
                     disableRowSelectionOnClick
+                    editMode="row"
+                    onRowEditStop={(params, event) => {
+                        if (option === "parts") {
+                            const partNum = params.row.part_num;
+                            const field = params.field;
+                            const newValue = event.target.value;
+                            console.log(params);
+                            console.log(partNum);
+                            console.log(field);
+                            console.log(newValue);
+                        }
+                    }}
                 />
-            </Box>
+            </Box> */}
+            <div className="table-height-container">
+                <table className="table">
+                    {option === "parts" ? (
+                        <tr>
+                            <th>Part Number</th>
+                            <th>Part Name</th>
+                            <th>Category</th>
+                            <th> </th>
+                        </tr>
+                    ) : (
+                        <tr>
+                            <th>Set Number</th>
+                            <th>Set Name</th>
+                            <th>Year</th>
+                            <th>Number of parts</th>
+                            <th>Theme</th>
+                            <th> </th>
+                        </tr>
+                    )}
+                    {option === "parts"
+                        ? parts.map((part) => (
+                              <tr key={part.part_num}>
+                                  <td>{part.part_num}</td>
+                                  <td>{part.name}</td>
+                                  <td>{part.part_cat_name}</td>
+                                  <td>
+                                      <EditButton
+                                          onClick={editRow}
+                                          id={part.part_num}
+                                      />
+                                  </td>
+                              </tr>
+                          ))
+                        : sets.map((set) => (
+                              <tr key={set.set_num}>
+                                  <td>{set.set_num}</td>
+                                  <td>{set.name}</td>
+                                  <td>{set.year}</td>
+                                  <td>{set.num_parts}</td>
+                                  <td>{set.theme_name}</td>
+                                  <td>
+                                      <EditButton
+                                          onClick={editRow}
+                                          id={set.set_num}
+                                      />
+                                  </td>
+                              </tr>
+                          ))}
+                </table>
+            </div>
+            <button
+                onClick={() => {
+                    if (page >= 1) {
+                        setPage(page - 1);
+                        setData();
+                    }
+                }}
+            >
+                Poprzednia strona
+            </button>
+            <div>{page}</div>
+            <button
+                onClick={() => {
+                    setPage(page + 1);
+                    setData();
+                }}
+            >
+                Następna strona
+            </button>
         </div>
     );
 };
