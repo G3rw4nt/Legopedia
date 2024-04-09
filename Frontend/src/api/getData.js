@@ -2,8 +2,8 @@ import axios from "axios";
 
 const link = "http://localhost:5000";
 
-export const getParts = async () => {
-  const response = await axios.get(`${link}/parts`);
+export const getParts = async (page) => {
+  const response = await axios.get(`${link}/parts_paginated?page=${page}&per_page=10`);
   return response.data;
 };
 
@@ -12,8 +12,8 @@ export const getCategories = async () => {
   return response.data;
 };
 
-export const getSets = async () => {
-  const response = await axios.get(`${link}/sets`);
+export const getSets = async (page) => {
+  const response = await axios.get(`${link}/sets_paginated?page=${page}&per_page=10`);
   return response.data;
 };
 

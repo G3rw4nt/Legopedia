@@ -15,6 +15,21 @@ class Sets:
             return jsonify(results), 200
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)}), 400
+        
+    @staticmethod
+    def read_all_paginated():
+        try:
+            data = request.args.to_dict()
+            page = int(data['page'])
+            per_page = int(data['per_page'])
+            query = 'SELECT * FROM SETS ORDER BY SET_NUM LIMIT %s OFFSET %s'
+            cursor.execute(query, (per_page, (page - 1) * per_page))
+            columns = [desc[0] for desc in cursor.description]
+            rows = cursor.fetchall()
+            results = [{columns[i]: value for i, value in enumerate(row)} for row in rows]
+            return jsonify(results), 200
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': str(e)}), 400
 
     @staticmethod
     def read():
@@ -61,8 +76,9 @@ class Sets:
     def update():
         try:
             data = request.get_json()
+            print(data)
             query = 'UPDATE SETS SET NAME = %s, YEAR = %s, THEME_ID = %s, NUM_PARTS = %s WHERE SET_NUM = %s'
-            cursor.execute(query, (data["set_num"], data["name"], data["year"], data["theme_id"], data["num_parts"]))
+            cursor.execute(query, ( data["name"], data["year"], data["theme_id"], data["num_parts"], data["set_num"]))
             updated_row_count = cursor.rowcount
             conn.commit()
             return jsonify({'Updated count: ': updated_row_count}), 200

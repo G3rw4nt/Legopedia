@@ -15,6 +15,22 @@ class Parts:
             return jsonify(results), 200
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)}), 400
+        
+    @staticmethod
+    def read_all_paginated():
+        try:
+            data = request.args.to_dict()
+            print(data)
+            page = int(data['page'])
+            per_page = int(data['per_page'])
+            query = 'SELECT * FROM PARTS ORDER BY PART_NUM LIMIT %s OFFSET %s'
+            cursor.execute(query, (per_page, (page - 1) * per_page))
+            columns = [desc[0] for desc in cursor.description]
+            rows = cursor.fetchall()
+            results = [{columns[i]: value for i, value in enumerate(row)} for row in rows]
+            return jsonify(results), 200
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': str(e)}), 400
 
     @staticmethod
     def read():

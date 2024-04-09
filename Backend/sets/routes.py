@@ -6,6 +6,9 @@ from sets.models import Sets
 def read_all_sets():
     return Sets().read_all()
 
+@app.route('/sets_paginated', methods=['GET'])
+def read_all_sets_paginated():
+    return Sets().read_all_paginated()
 
 @app.route('/set', methods=['GET'])
 def read_set():

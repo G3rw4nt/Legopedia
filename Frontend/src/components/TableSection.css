@@ -6,6 +6,11 @@
     /* margin-top: 40px; */
 }
 
+.table-height-container {
+    height: 500px;
+    overflow: auto;
+}
+
 .filtering {
     width: 100%;
     display: flex;
