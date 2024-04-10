@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: baza_systemy_chmurowe
+    restart: always
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: postgre
+      POSTGRES_PASSWORD: postgre
+    volumes:
+      - ./Database/data/part_categories.csv:/data/part_categories.csv
+      - ./Database/data/parts.csv:/data/parts.csv
+      - ./Database/data/sets.csv:/data/sets.csv
+      - ./Database/data/themes.csv:/data/themes.csv
+      - ./Database/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    ports:
+      - "5432:5432"
