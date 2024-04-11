@@ -29,6 +29,7 @@ const TableSection = ({ option }) => {
     const [categoriesLoading, setCategoriesLoading] = useState(false);
     const [themesLoading, setThemesLoading] = useState(false);
     const [setsLoading, setSetsLoading] = useState(false);
+    const [partsLoading, setPartsLoading] = useState(false);
 
     //form for parts
     const [partNum, setPartNum] = useState("");
@@ -68,44 +69,20 @@ const TableSection = ({ option }) => {
         setThemesLoading(false);
     };
 
-    const fetchData = useCallback(
-        async (page) => {
-            // getParts(page).then((data) => {
-            //     console.log(data);
-            //     const partsWithCategories = data.map((part) => {
-            //         const category = categories.find(
-            //             (category) => category.id === part.part_cat_id
-            //         );
-            //         return {
-            //             ...part,
-            //             part_cat_name: category?.name,
-            //         };
-            //     });
-            //     setParts(partsWithCategories);
-            //     console.log("parts with categowies");
-            //     console.log(partsWithCategories);
-            // });
-            if (themesLoading) return;
-            setSetsLoading(true);
-            const sets = await getSets(page);
-            console.log(sets);
-            const setsWithThemes = sets.map((set) => {
-                const theme = themes.find((theme) => theme.id === set.theme_id);
-                return {
-                    ...set,
-                    theme_name: theme?.name,
-                };
-            });
-            setSets(setsWithThemes);
-            setSetsLoading(false);
-        },
-        [themes, themesLoading]
-    );
+    const fetchData = useCallback(async (page) => {
+        setSetsLoading(true);
+        setPartsLoading(true);
+        const sets = await getSets(page);
+        const parts = await getParts(page);
+        console.log(sets);
+        setSets(sets);
+        setParts(parts);
+        setSetsLoading(false);
+        setPartsLoading(false);
+    }, []);
 
     useEffect(() => {
-        // if (categoriesLoading || themesLoading || setsLoading) return;
-
-        // fetchCategories();
+        fetchCategories();
         fetchThemes();
         fetchData(page);
     }, [page]);
@@ -259,8 +236,6 @@ const TableSection = ({ option }) => {
 
     const submitEditRow = (e) => {
         e.preventDefault();
-        console.log(editPartNum, editPartName, editPartCategory);
-        console.log(editSetNum, editSetName, editYear, editNumParts, editTheme);
         console.log(themes);
         if (option === "parts") {
             const editedPart = {
@@ -269,11 +244,9 @@ const TableSection = ({ option }) => {
                 part_cat_id: editPartCategory,
             };
             putParts(editedPart).then((data) => {
-                if (data.code === "ERR_BAD_REQUEST")
-                    // alert(data.response.data.message);
-                    console.log(data);
+                if (data.code === "ERR_BAD_REQUEST") console.log(data);
                 else {
-                    fetchData();
+                    fetchData(page);
                     hideEditForm();
                 }
             });
@@ -289,22 +262,18 @@ const TableSection = ({ option }) => {
                 if (data.code === "ERR_BAD_REQUEST")
                     alert(data.response.data.message);
                 else {
-                    fetchData();
+                    fetchData(page);
                     hideEditForm();
                 }
             });
         }
     };
 
-    return setsLoading ? (
+    return setsLoading && partsLoading ? (
         <div>Loading...</div>
     ) : (
         <div className="table-container">
             <h2>{option}</h2>
-            {/* <div className="table-buttons">
-                <button onClick={() => setOption("parts")}>PARTS</button>
-                <button onClick={() => setOption("sets")}>SETS</button>
-            </div> */}
             <div className="filtering">
                 <div className="filtering-label">Filter by: </div>
                 <select
@@ -500,7 +469,9 @@ const TableSection = ({ option }) => {
                             <label>Theme</label>
                             <select
                                 value={editTheme}
-                                onChange={(e) => setEditTheme(e.target.value)}
+                                onChange={(e) => {
+                                    setEditTheme(e.target.value);
+                                }}
                             >
                                 {themes.map((theme) => (
                                     <option key={theme.id} value={theme.id}>
@@ -586,7 +557,6 @@ const TableSection = ({ option }) => {
         </div>
     );
 };
-// }
 
 TableSection.propTypes = {
     option: PropTypes.string,
