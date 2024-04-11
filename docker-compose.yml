@@ -17,3 +17,19 @@ services:
       - ./Database/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
     ports:
       - "5432:5432"
+  backend:
+    build: ./Backend
+    container_name: backend_systemy_chmurowe
+    restart: always
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+  frontend:
+    build: ./Frontend
+    container_name: frontend_systemy_chmurowe
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
