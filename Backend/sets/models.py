@@ -31,7 +31,8 @@ class Sets:
             data = request.args.to_dict()
             page = int(data['page'])
             per_page = int(data['per_page'])
-            query = 'SELECT * FROM SETS ORDER BY SET_NUM LIMIT %s OFFSET %s'
+            query = ('SELECT s.*, t.name as THEME_NAME FROM SETS s JOIN THEMES t on s.theme_id = t.id ORDER BY SET_NUM '
+                     'LIMIT %s OFFSET %s')
             cursorsecond.execute(query, (per_page, (page - 1) * per_page))
             columns = [desc[0] for desc in cursorsecond.description]
             rows = cursorsecond.fetchall()
