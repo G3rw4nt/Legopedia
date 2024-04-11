@@ -27,6 +27,11 @@ class Sets:
             columns = [desc[0] for desc in cursor.description]
             rows = cursor.fetchall()
             results = [{columns[i]: value for i, value in enumerate(row)} for row in rows]
+            print('cursor', cursor)
+            print('sets', results)
+            print("count", cursor.rowcount)
+            print("rows", rows)
+            cursor.close()
             return jsonify(results), 200
         except Exception as e:
             return jsonify({'status': 'error', 'message': str(e)}), 400
