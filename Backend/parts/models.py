@@ -1,3 +1,4 @@
+import psycopg2
 from flask import jsonify, request
 from app import cursor, conn
 
@@ -18,18 +19,32 @@ class Parts:
         
     @staticmethod
     def read_all_paginated():
+        connection = psycopg2.connect(
+            database="db",
+            host="localhost",
+            user="postgre",
+            password="postgre",
+            port="5432"
+        )
         try:
+            cursorsecond = connection.cursor()
             data = request.args.to_dict()
             print(data)
             page = int(data['page'])
             per_page = int(data['per_page'])
-            query = 'SELECT * FROM PARTS ORDER BY PART_NUM LIMIT %s OFFSET %s'
-            cursor.execute(query, (per_page, (page - 1) * per_page))
-            columns = [desc[0] for desc in cursor.description]
-            rows = cursor.fetchall()
+            query = ('SELECT p.*, pc.name as part_cat_name FROM PARTS p JOIN part_categories pc '
+                     'on p.part_cat_id = pc.id'
+                     '  ORDER BY PART_NUM LIMIT %s OFFSET %s')
+            cursorsecond.execute(query, (per_page, (page - 1) * per_page))
+            columns = [desc[0] for desc in cursorsecond.description]
+            rows = cursorsecond.fetchall()
             results = [{columns[i]: value for i, value in enumerate(row)} for row in rows]
+            cursorsecond.close()
+            connection.close()
             return jsonify(results), 200
         except Exception as e:
+            cursorsecond.close()
+            connection.close()
             return jsonify({'status': 'error', 'message': str(e)}), 400
 
     @staticmethod
