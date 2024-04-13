@@ -1,22 +1,10 @@
 from flask import Flask
-import psycopg2
-import os
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
 cors = CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 app.secret_key = b'\xcc^\x91\xea\x17-\xd0W\x03\xa7\xf8J0\xac8\xc5'
-
-conn = psycopg2.connect(
-    database="db",
-    host="localhost",
-    user="postgre",
-    password="postgre",
-    port="5432"
-)
-
-cursor = conn.cursor()
 
 import part_categories.routes
 import parts.routes
