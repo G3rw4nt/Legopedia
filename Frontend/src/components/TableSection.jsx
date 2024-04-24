@@ -8,26 +8,11 @@ import {
     getSets,
     getThemes,
 } from "../api/getData";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-
-// import Box from "@mui/material/Box";
-// import { DataGrid } from "@mui/x-data-grid";
-// import {
-//     randomCreatedDate,
-//     randomTraderName,
-//     randomUpdatedDate,
-// } from "@mui/x-data-grid-generator";
-// import { GridCellEditStopReasons } from "@mui/x-data-grid";
 import { postParts, postSets } from "../api/postData";
-import SelectEditInputCell from "./SelectEditInputCell";
 import EditButton from "./EditButton";
 import { putParts, putSets } from "../api/putData";
-// import { Select } from "@mui/material";
-
-const renderSelectEditInputCell = (params) => {
-    return <SelectEditInputCell {...params} />;
-};
 
 const TableSection = ({ option }) => {
     const [page, setPage] = useState(1);
@@ -39,6 +24,12 @@ const TableSection = ({ option }) => {
     const [filterValue, setFilterValue] = useState("");
     const [addForm, setAddForm] = useState(false);
     const [editForm, setEditForm] = useState(false);
+
+    // loading
+    const [categoriesLoading, setCategoriesLoading] = useState(false);
+    const [themesLoading, setThemesLoading] = useState(false);
+    const [setsLoading, setSetsLoading] = useState(false);
+    const [partsLoading, setPartsLoading] = useState(false);
 
     //form for parts
     const [partNum, setPartNum] = useState("");
@@ -64,105 +55,37 @@ const TableSection = ({ option }) => {
     const [editNumParts, setEditNumParts] = useState("");
     const [editTheme, setEditTheme] = useState("");
 
-    const setData = () => {
-        getParts(page).then((data) => {
-            console.log(data);
-            getCategories().then((categories) => {
-                setCategories(categories);
-                const partsWithCategories = data.map((part) => {
-                    const category = categories.find(
-                        (category) => category.id === part.part_cat_id
-                    );
-                    return {
-                        ...part,
-                        part_cat_name: category?.name,
-                    };
-                });
-                setParts(partsWithCategories);
-                console.log("parts with categowies");
-                console.log(partsWithCategories);
-            });
-        });
-        getSets(page).then((sets) => {
-            console.log(sets);
-            getThemes().then((themes) => {
-                setThemes(themes);
-                const setsWithThemes = sets.map((set) => {
-                    const theme = themes.find(
-                        (theme) => theme.id === set.theme_id
-                    );
-                    return {
-                        ...set,
-                        theme_name: theme?.name,
-                    };
-                });
-                setSets(setsWithThemes);
-            });
-        }, []);
+    const fetchCategories = async () => {
+        setCategoriesLoading(true);
+        const categories = await getCategories();
+        setCategories(categories);
+        setCategoriesLoading(false);
     };
 
-    useEffect(() => {
-        setData();
+    const fetchThemes = async () => {
+        setThemesLoading(true);
+        const themes = await getThemes();
+        setThemes(themes);
+        setThemesLoading(false);
+    };
+
+    const fetchData = useCallback(async (page) => {
+        setSetsLoading(true);
+        setPartsLoading(true);
+        const sets = await getSets(page);
+        const parts = await getParts(page);
+        console.log(sets);
+        setSets(sets);
+        setParts(parts);
+        setSetsLoading(false);
+        setPartsLoading(false);
     }, []);
 
-    const columnsParts = [
-        {
-            field: "part_num",
-            headerName: "Part Number",
-            // type: "number",
-            width: 170,
-            editable: true,
-        },
-        {
-            field: "name",
-            headerName: "Part Name",
-            width: 350,
-            editable: true,
-        },
-        {
-            field: "part_cat_id",
-            headerName: "Category",
-            width: 110,
-            editable: true,
-            renderEditCell: renderSelectEditInputCell,
-        },
-    ];
-
-    const columnsSets = [
-        {
-            field: "set_num",
-            headerName: "Set Number",
-            width: 150,
-            editable: true,
-        },
-        {
-            field: "name",
-            headerName: "Set Name",
-            width: 260,
-            editable: true,
-        },
-        {
-            field: "year",
-            headerName: "Year",
-            // type: "number",
-            width: 100,
-            editable: true,
-        },
-        {
-            field: "num_parts",
-            headerName: "Number of parts",
-            type: "number",
-            width: 150,
-            editable: true,
-        },
-        {
-            field: "theme_id",
-            headerName: "Theme",
-            type: "number",
-            width: 110,
-            editable: true,
-        },
-    ];
+    useEffect(() => {
+        fetchCategories();
+        fetchThemes();
+        fetchData(page);
+    }, [page]);
 
     const selectPartOptions = [
         { value: "part_num", label: "Part Number" },
@@ -226,7 +149,7 @@ const TableSection = ({ option }) => {
     const clearFilters = () => {
         setFilterBy("");
         setFilterValue("");
-        setData();
+        fetchData();
     };
 
     const addData = () => {
@@ -257,7 +180,7 @@ const TableSection = ({ option }) => {
                 if (data.code === "ERR_BAD_REQUEST")
                     alert(data.response.data.message);
                 else {
-                    setData();
+                    fetchData();
                     hideAddingSection();
                 }
             });
@@ -273,7 +196,7 @@ const TableSection = ({ option }) => {
                 if (data.code === "ERR_BAD_REQUEST")
                     alert(data.response.data.message);
                 else {
-                    setData();
+                    fetchData();
                     hideAddingSection();
                 }
             });
@@ -313,8 +236,6 @@ const TableSection = ({ option }) => {
 
     const submitEditRow = (e) => {
         e.preventDefault();
-        console.log(editPartNum, editPartName, editPartCategory);
-        console.log(editSetNum, editSetName, editYear, editNumParts, editTheme);
         console.log(themes);
         if (option === "parts") {
             const editedPart = {
@@ -323,11 +244,9 @@ const TableSection = ({ option }) => {
                 part_cat_id: editPartCategory,
             };
             putParts(editedPart).then((data) => {
-                if (data.code === "ERR_BAD_REQUEST")
-                    // alert(data.response.data.message);
-                    console.log(data);
+                if (data.code === "ERR_BAD_REQUEST") console.log(data);
                 else {
-                    setData();
+                    fetchData(page);
                     hideEditForm();
                 }
             });
@@ -343,20 +262,18 @@ const TableSection = ({ option }) => {
                 if (data.code === "ERR_BAD_REQUEST")
                     alert(data.response.data.message);
                 else {
-                    setData();
+                    fetchData(page);
                     hideEditForm();
                 }
             });
         }
     };
 
-    return (
+    return setsLoading && partsLoading ? (
+        <div>Loading...</div>
+    ) : (
         <div className="table-container">
             <h2>{option}</h2>
-            {/* <div className="table-buttons">
-                <button onClick={() => setOption("parts")}>PARTS</button>
-                <button onClick={() => setOption("sets")}>SETS</button>
-            </div> */}
             <div className="filtering">
                 <div className="filtering-label">Filter by: </div>
                 <select
@@ -552,7 +469,9 @@ const TableSection = ({ option }) => {
                             <label>Theme</label>
                             <select
                                 value={editTheme}
-                                onChange={(e) => setEditTheme(e.target.value)}
+                                onChange={(e) => {
+                                    setEditTheme(e.target.value);
+                                }}
                             >
                                 {themes.map((theme) => (
                                     <option key={theme.id} value={theme.id}>
@@ -566,40 +485,6 @@ const TableSection = ({ option }) => {
                     <button onClick={hideEditForm}>Anuluj</button>
                 </form>
             )}
-            {/* <Box sx={{ height: 400, width: "100%" }}>
-                <DataGrid
-                    getRowId={(row) =>
-                        option === "parts"
-                            ? row.name + row.year + row.set_num
-                            : row.set_num
-                    }
-                    style={{ color: "#fff" }}
-                    rows={option === "parts" ? parts : sets}
-                    columns={option === "parts" ? columnsParts : columnsSets}
-                    initialState={{
-                        pagination: {
-                            paginationModel: {
-                                pageSize: 5,
-                            },
-                        },
-                    }}
-                    pageSizeOptions={[5]}
-                    checkboxSelection
-                    disableRowSelectionOnClick
-                    editMode="row"
-                    onRowEditStop={(params, event) => {
-                        if (option === "parts") {
-                            const partNum = params.row.part_num;
-                            const field = params.field;
-                            const newValue = event.target.value;
-                            console.log(params);
-                            console.log(partNum);
-                            console.log(field);
-                            console.log(newValue);
-                        }
-                    }}
-                />
-            </Box> */}
             <div className="table-height-container">
                 <table className="table">
                     {option === "parts" ? (
@@ -650,29 +535,28 @@ const TableSection = ({ option }) => {
                           ))}
                 </table>
             </div>
-            <button
-                onClick={() => {
-                    if (page >= 1) {
-                        setPage(page - 1);
-                        setData();
-                    }
-                }}
-            >
-                Poprzednia strona
-            </button>
-            <div>{page}</div>
-            <button
-                onClick={() => {
-                    setPage(page + 1);
-                    setData();
-                }}
-            >
-                Następna strona
-            </button>
+            <div className="button-line">
+                <button
+                    onClick={() => {
+                        if (page >= 1) {
+                            setPage(page - 1);
+                        }
+                    }}
+                >
+                    Poprzednia strona
+                </button>
+                <div>{page}</div>
+                <button
+                    onClick={() => {
+                        setPage(page + 1);
+                    }}
+                >
+                    Następna strona
+                </button>
+            </div>
         </div>
     );
 };
-// }
 
 TableSection.propTypes = {
     option: PropTypes.string,

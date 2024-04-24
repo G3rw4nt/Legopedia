@@ -13,7 +13,14 @@ export const getCategories = async () => {
 };
 
 export const getSets = async (page) => {
-  const response = await axios.get(`${link}/sets_paginated?page=${page}&per_page=10`);
+  const response = await axios.get(`${link}/sets_paginated`,
+    {
+      params: {
+        page: page,
+        per_page: 10,
+      }
+    }
+  );
   return response.data;
 };
 

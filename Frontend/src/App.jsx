@@ -14,7 +14,7 @@ function App() {
             <Title />
             <OptionToggle setOption={setOption} />
             <TableSection option={option} />
-            {option === "parts" && <Histogram />}
+            {option === "sets" && <Histogram />}
         </>
     );
 }
