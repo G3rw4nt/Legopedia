@@ -535,25 +535,25 @@ const TableSection = ({ option }) => {
                           ))}
                 </table>
             </div>
-            <button
-                onClick={() => {
-                    if (page >= 1) {
-                        setPage(page - 1);
-                        // fetchData(page - 1);
-                    }
-                }}
-            >
-                Poprzednia strona
-            </button>
-            <div>{page}</div>
-            <button
-                onClick={() => {
-                    setPage(page + 1);
-                    // fetchData(page + 1);
-                }}
-            >
-                Następna strona
-            </button>
+            <div className="button-line">
+                <button
+                    onClick={() => {
+                        if (page >= 1) {
+                            setPage(page - 1);
+                        }
+                    }}
+                >
+                    Poprzednia strona
+                </button>
+                <div>{page}</div>
+                <button
+                    onClick={() => {
+                        setPage(page + 1);
+                    }}
+                >
+                    Następna strona
+                </button>
+            </div>
         </div>
     );
 };

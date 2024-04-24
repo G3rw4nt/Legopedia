@@ -73,3 +73,22 @@ h1 {
     width: 100px;
     align-self: center;
 }
+
+.histogram-container {
+    padding-bottom: 20px;
+}
+
+.button-line {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    flex-direction: row;
+    margin: 10px;
+    margin-top: 20px;
+}
+
+.option-toggle-container {
+    margin-top: 10px;
+}
