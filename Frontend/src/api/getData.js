@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const link = "http://localhost:5000";
+const link = "http://localhost:4000";
 
 export const getParts = async (page) => {
   const response = await axios.get(`${link}/parts_paginated?page=${page}&per_page=10`);

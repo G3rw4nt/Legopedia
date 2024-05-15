@@ -1,5 +1,5 @@
 Flask==1.1.2
-psycopg2==2.8.6
+psycopg2>=2.8.6
 flask_cors==3.0.10
 jinja2==3.0.3
 itsdangerous==2.0.1
