@@ -10,10 +10,10 @@ import part_categories.routes
 import parts.routes
 import sets.routes
 import themes.routes
-@app.route('/')
+@app.route('/api', methods=['GET', 'POST', 'PUT', 'DELETE'])
 @cross_origin()
 def hello_world():
     return 'hello world'
 
 if __name__ == '__main__':
-    app.run(port=4000, host='0.0.0.0')
+    app.run(port=4000, host='0.0.0.0', debug=True)
