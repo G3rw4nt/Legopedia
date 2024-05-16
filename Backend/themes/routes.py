@@ -1,4 +1,3 @@
-from app import app
 from themes.models import Themes
 from flask import Blueprint
 
