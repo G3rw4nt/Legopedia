@@ -1,7 +1,7 @@
 FLASK_APP=app
 FLASK_DEBUG=1
 DATABASE=db
-HOST=127.0.0.1
+HOST=baza_systemy_chmurowe
 DB_USER=postgre
 DB_PASSWORD=postgre
 PORT=5432

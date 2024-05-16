@@ -8,6 +8,7 @@ class Themes:
     @staticmethod
     def read_all():
         try:
+            print(database.databaseConnection.DatabaseConnection().connect_to_db())
             conn, cursor = database.databaseConnection.DatabaseConnection().connect_to_db()
             query = 'SELECT * FROM THEMES'
             cursor.execute(query)

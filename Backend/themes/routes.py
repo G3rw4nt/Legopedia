@@ -1,8 +1,9 @@
 from app import app
 from themes.models import Themes
+from flask import Blueprint
 
-
-@app.route('/themes', methods=['GET'])
+read_all_themes_blueprint = Blueprint('read_all_themes', __name__)
+@read_all_themes_blueprint.route('/themes', methods=['GET'])
 def read_all_themes():
     return Themes().read_all()
 
