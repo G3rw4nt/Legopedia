@@ -3,6 +3,7 @@ import axios from "axios";
 const link = "http://localhost:4000";
 
 export const getParts = async (page) => {
+  if (page === undefined) page = 1;
   const response = await axios.get(`${link}/parts_paginated?page=${page}&per_page=10`);
   return response.data;
 };
@@ -13,6 +14,7 @@ export const getCategories = async () => {
 };
 
 export const getSets = async (page) => {
+  if (page === undefined) page = 1;
   const response = await axios.get(`${link}/sets_paginated`,
     {
       params: {
