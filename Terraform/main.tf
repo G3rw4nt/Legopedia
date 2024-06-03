@@ -66,6 +66,7 @@ resource "aws_instance" "backend_instance" {
     git clone https://github.com/G3rw4nt/Legopedia
     cd Legopedia
     cd Backend
+    echo "DB_HOST=http://${aws_instance.db_instance.public_dns}" > .env
 
     python -m flask run
   EOF
