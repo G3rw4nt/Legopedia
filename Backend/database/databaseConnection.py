@@ -1,5 +1,5 @@
 import psycopg2
-
+import os
 
 class DatabaseConnection:
     @staticmethod
@@ -9,7 +9,7 @@ class DatabaseConnection:
         try:
             connection = psycopg2.connect(
                 database="db",
-                host="baza_systemy_chmurowe",
+                host=os.environ['DB_HOST'],
                 user="postgre",
                 password="postgre",
                 port="5432"
