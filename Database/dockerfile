@@ -1,0 +1,10 @@
+FROM postgres:14-alpine as baza_systemy_chmurowe
+
+# Copy .csv and init.sql files to the container
+COPY data/part_categories.csv /tmp/data/part_categories.csv
+COPY data/sets.csv /tmp/data/sets.csv 
+COPY data/themes.csv /tmp/data/themes.csv
+COPY data/parts.csv /tmp/data/parts.csv
+COPY create_tables.sql /docker-entrypoint-initdb.d/create_tables.sql 
+
+EXPOSE 5432

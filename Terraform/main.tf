@@ -62,11 +62,12 @@ resource "aws_instance" "backend_instance" {
     sudo yum install -y python3
     sudo yum install -y 
     pip3 install flask
+    pip3 install python-dotenv
 
     git clone https://github.com/G3rw4nt/Legopedia
     cd Legopedia
     cd Backend
-    echo "DB_HOST=http://${aws_instance.db_instance.public_dns}" > .env
+    echo "DB_HOST=${aws_instance.db_instance.public_dns}" > .env
 
     python -m flask run
   EOF

@@ -9,7 +9,7 @@ class DatabaseConnection:
         try:
             connection = psycopg2.connect(
                 database="db",
-                host=os.environ['DB_HOST'],
+                host=os.environ.get('DB_HOST'),
                 user="postgre",
                 password="postgre",
                 port="5432"
