@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const link = process.env.BACKEND_URL ?? "http://localhost:5000";
+const link = import.meta.env.VITE_BACKEND_URL ?? "http://localhost:5000";
 
 export const getParts = async (page) => {
   if (page === undefined) page = 1;
