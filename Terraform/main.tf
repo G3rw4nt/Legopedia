@@ -97,6 +97,7 @@ resource "aws_instance" "frontend_instance" {
     sudo yum install -y npm
 
     git clone https://github.com/G3rw4nt/Legopedia
+    cd Legopedia
     cd Frontend
 
     echo "BACKEND_URL=http://${aws_instance.backend_instance.public_dns}:5000/" > .env
