@@ -60,16 +60,19 @@ resource "aws_instance" "backend_instance" {
     sudo yum update -y
     sudo yum install -y git
     sudo yum install -y python3
-    sudo yum install -y 
+    sudo yum install python3-pip -y
     pip3 install flask
     pip3 install python-dotenv
+    pip3 install -U flask-cors
+    pip3 install psycopg2-binary
+
 
     git clone https://github.com/G3rw4nt/Legopedia
     cd Legopedia
     cd Backend
     echo "DB_HOST=${aws_instance.db_instance.public_dns}" > .env
 
-    python -m flask run
+    python3 -m flask run --host 0.0.0.0
   EOF
 }
 
@@ -99,7 +102,6 @@ resource "aws_instance" "frontend_instance" {
     echo "BACKEND_URL=http://${aws_instance.backend_instance.public_dns}:5000/" > .env
 
     npm ci
-    npm run build
-    npm run preview
+    npm run dev
   EOF
 }
