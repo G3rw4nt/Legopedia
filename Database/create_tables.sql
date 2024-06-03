@@ -23,13 +23,13 @@ CREATE TABLE IF NOT EXISTS SETS (
     num_parts INTEGER
 );
 
-COPY THEMES(id, name, parent_id) FROM '/data/themes.csv' WITH (FORMAT csv, HEADER true);
+COPY THEMES(id, name, parent_id) FROM '/tmp/data/themes.csv' WITH (FORMAT csv, HEADER true);
 
-COPY PART_CATEGORIES(id, name) FROM '/data/part_categories.csv' WITH (FORMAT csv, HEADER true);
+COPY PART_CATEGORIES(id, name) FROM '/tmp/data/part_categories.csv' WITH (FORMAT csv, HEADER true);
 
-COPY PARTS(part_num, name, part_cat_id) FROM '/data/parts.csv' WITH (FORMAT csv, HEADER true);
+COPY PARTS(part_num, name, part_cat_id) FROM '/tmp/data/parts.csv' WITH (FORMAT csv, HEADER true);
 
-COPY SETS(set_num, name, year, theme_id, num_parts) FROM '/data/sets.csv' WITH (FORMAT csv, HEADER true);
+COPY SETS(set_num, name, year, theme_id, num_parts) FROM '/tmp/data/sets.csv' WITH (FORMAT csv, HEADER true);
 
 ALTER SEQUENCE part_categories_id_seq START WITH 58;
 
