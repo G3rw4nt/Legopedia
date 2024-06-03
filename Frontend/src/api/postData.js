@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const link = "http://localhost:4000";
+const link = import.meta.env.BACKEND_URL ?? "http://localhost:5000";
 
 export const postParts = async (data) => {
     try {
