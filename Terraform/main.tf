@@ -100,7 +100,7 @@ resource "aws_instance" "frontend_instance" {
     cd Legopedia
     cd Frontend
 
-    echo "BACKEND_URL=http://${aws_instance.backend_instance.public_dns}:5000/" > .env
+    echo "VITE_BACKEND_URL=http://${aws_instance.backend_instance.public_dns}:5000/" > .env
 
     npm ci
     npm run dev
